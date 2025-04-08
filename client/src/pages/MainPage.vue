@@ -15,14 +15,40 @@
     </div>
 
     <div class="input input_password">
-      <label for="password" class="required" @input="inputValue({password: $event.target.value})">Пароль</label>
-      <input :value="password">
+      <label for="password" class="required">Пароль</label>
+      <input type="text" :value="password" @input="inputValue({password: $event.target.value})">
+    </div>
+
+    <div class="input input_password">
+      <label for="email" class="required">E-mail</label>
+      <input type="text" :value="email" @input="inputValue({email: $event.target.value})">
+    </div>
+
+    <div class="input input_password">
+      <label for="birthDate">Дата рождения</label>
+      <div class="input_date">
+        <div class="input_date_item">
+          День
+          <input type="number" :value="date" min="0" max="31" @input="inputValue({date: $event.target.value})">
+        </div>
+        <div class="input_date_item">
+          Месяц
+          <input type="number" :value="month" min="0" max="12" @input="inputValue({month: $event.target.value})">
+        </div>
+        <div class="input_date_item">
+          Год
+          <input type="number" :value="year" min="0" @input="inputValue({year: $event.target.value})">
+        </div>
+      </div>
     </div>
 
 
     <div class="input_button">
-      <input class="input_button_text" type="button" value="Зарегистрироваться">
+      <input class="input_button_text" type="button" value="Зарегистрироваться" @click="save">
     </div>
+    <span style="color: green">
+      {{text}}
+    </span>
   </div>
 
   <div class="checkbox-group">
@@ -46,7 +72,12 @@ export default {
     name: null,
     surname: null,
     password: null,
+    email: null,
     newsletter: false,
+    text: null,
+    date: null,
+    month: null,
+    year: null,
   }),
   methods: {
     clickCheck() {
@@ -64,6 +95,9 @@ export default {
     blurName() {
       this.name = null;
     },
+    save() {
+      this.text = 'Ваша учетная запсиь успешно создлана!'
+    }
   }
 }
 </script>
@@ -89,6 +123,13 @@ export default {
     margin-top: 15px
     &_text
       font-size: 18px
+  &_date
+    display: flex
+    flex-direction: row
+    &_item
+      display: flex
+      flex-direction: column
+      gap: 5px
 
 .required
   &::after
