@@ -1,10 +1,6 @@
 <template>
-  {{ title }}
+  <MainPage/>
 </template>
-
-<script>
-export default {
-  name: 'MainPage',
-  data: () => ({title: 'Регистрация'})
-}
+<script setup>
+import MainPage from './MainPage.vue'
 </script>
