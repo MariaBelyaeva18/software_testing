@@ -58,7 +58,21 @@ export const mainStore = defineStore('main', {
       // Намеренно не проверяем часть после @ (это наш дефект)
       // test@ пройдет валидацию
 
-      this.emailError = null
+      this.errors.email = null
+      return true
+    },
+    validatePassword() {
+      if (!this.password) {
+        this.errors.password = 'Это поле обязательно'
+        return false
+      }
+
+      // Проверка длины
+      if (this.password.length < 5) {
+        this.errors.password = 'Пароль должен содержать не менее 5 символов'
+        return false
+      }
+      this.errors.password = null
       return true
     },
     validate() {
@@ -77,6 +91,10 @@ export const mainStore = defineStore('main', {
 
       // Проверка email
       if (!this.validateEmail()) {
+        isValid = false
+      }
+      // Проверка email
+      if (!this.validatePassword()) {
         isValid = false
       }
 
