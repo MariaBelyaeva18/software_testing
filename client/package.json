@@ -11,9 +11,13 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
-    "vue": "^3.5.13",
+    "@mdi/font": "^7.3.67",
+    "pinia": "^2.2.6",
     "sass-embedded": "^1.86.3",
-    "v-mask": "^2.3.0"
+    "v-mask": "^2.3.0",
+    "vue": "^3.5.13",
+    "vue-the-mask": "^0.11.1",
+    "vuetify": "^3.7.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",

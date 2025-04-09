@@ -1,156 +1,200 @@
 <template>
-  <b>
-    {{ title }}
-  </b>
+  <v-container>
+    <v-row justify="center">
+      <v-col cols="12" md="8" lg="6">
+        <v-card class="pa-6">
+          <v-card-title class="text-h4 mb-6">
+            <strong>{{ title }}</strong>
+          </v-card-title>
 
-  <div>
-    <div class="input input_name">
-      <label for="name" class="required">Имя</label>
-      <input type="text" id="name" :value="name" @input="inputName($event)" @blur="blurName">
-    </div>
+          <v-form @submit.prevent="clickSave">
+            <v-card-subtitle class="pl-0 required">Имя</v-card-subtitle>
+            <v-text-field
+              v-model="name"
+              label="Имя"
+              required
+              :error-messages="errors.name"
+              @input="updateField('name', $event.target.value)"
+            ></v-text-field>
 
-    <div class="input input_surname">
-      <label for="surname" class="required_surname">Фамилия</label>
-      <input type="text" id="surname" :value="surname" @input="inputValue({surname: $event.target.value})">
-    </div>
+            <v-card-subtitle class="pl-0 required">Фамилия</v-card-subtitle>
+            <v-text-field
+              v-model="surname"
+              label="Фамилия"
+              required
+              :error-messages="errors.surname"
+              @input="updateField('surname', $event.target.value)"
+            ></v-text-field>
 
-    <div class="input input_password">
-      <label for="password" class="required">Пароль</label>
-      <input type="text" id="password" :value="password" @input="inputValue({password: $event.target.value})">
-    </div>
+            <v-card-subtitle class="pl-0 required">Пароль</v-card-subtitle>
+            <v-text-field
+              v-model="password"
+              label="Пароль"
+              type="password"
+              required
+              :error-messages="errors.password"
+              @input="updateField('password', $event.target.value)"
+            ></v-text-field>
 
-    <div class="input input_password">
-      <label for="email" class="required">E-mail</label>
-      <input
-        type="text"
-        :value="email"
-        id="email"
-        @input="inputValue({email: $event.target.value})"
-      >
-    </div>
+            <v-card-subtitle class="pl-0 required">Email</v-card-subtitle>
+            <v-text-field
+              v-model="email"
+              label="E-mail"
+              type="email"
+              required
+              :error-messages="errors.email"
+              @input="updateField('email', $event.target.value)"
+            ></v-text-field>
 
-    <div class="input input_password">
-      <label for="birthDate">Дата рождения</label>
-      <div class="input_date">
-        <div class="input_date_item">
-          День
-          <input type="number" id="date" :value="date" min="0" max="31" @input="inputValue({date: $event.target.value})">
-        </div>
-        <div class="input_date_item">
-          Месяц
-          <input type="number" id="month" :value="month" min="0" max="12" @input="inputValue({month: $event.target.value})">
-        </div>
-        <div class="input_date_item">
-          Год
-          <input type="number" id="year" :value="year" min="0" @input="inputValue({year: $event.target.value})">
-        </div>
-      </div>
-    </div>
+            <v-card-subtitle class="pl-0 required">Дата рождения</v-card-subtitle>
+            <v-menu
+              v-model="menu"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ props }">
+                <v-text-field
+                  v-model="date"
+                  label="ДД.ММ.ГГГГ"
+                  placeholder="ДД.ММ.ГГГГ"
+                  v-bind="props"
+                  @input="updateField('date', $event.target.value)"
+                  :error-messages="errors.date"
+                  ref="dateInput"
+                  v-mask="'##.##.####'"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="pickerDate"
+                @update:modelValue="handleDatePicker"
+                no-title
+                scrollable
+              ></v-date-picker>
+            </v-menu>
 
 
-    <div class="input_button">
-      <input class="input_button_text" type="button" value="Зарегистрироваться" @click="save">
-    </div>
-    <span style="color: green">
-      {{text}}
-    </span>
-  </div>
+            <v-text-field
+              v-model="address"
+              label="Адрес"
+              type="address"
+              :error-messages="errors.address"
+              @input="updateField('address', $event.target.value)"
+            ></v-text-field>
 
-  <div class="checkbox-group">
-    <p>Подписаться на рассылку:</p>
-    <label class="checkbox-label">
-      <input type="checkbox" name="newsletter" id="newsletter" @click="clickCheck"> Новости и акции
-    </label>
-    <label class="checkbox-label">
-      <input type="checkbox" name="specialOffers" checked  @click="clickCheck"> Специальные предложения
-    </label>
-  </div>
-  <img class="image_class" src="@/assets/img.png" alt="">
+            <v-card-subtitle class="pl-0">Подписаться на рассылку:</v-card-subtitle>
+            <v-checkbox
+              v-model="newsletter"
+              label="Новости и акции"
+              @click="toggleNewsletter"
+            ></v-checkbox>
+            <v-checkbox
+              v-model="specialOffers"
+              label="Специальные предложения"
+              @click="toggleSpecialOffers"
+            ></v-checkbox>
+
+            <v-btn
+              color="primary"
+              type="submit"
+              block
+              size="large"
+            >
+              Зарегистрироваться
+            </v-btn>
+
+            <v-dialog
+              v-model="dialog"
+            >
+              <v-card
+                max-width="500"
+                :title="text"
+              >
+                <template v-slot:actions>
+                  <v-btn
+                    class="ms-auto"
+                    text="Ok"
+                    @click="close"
+                  ></v-btn>
+                </template>
+              </v-card>
+            </v-dialog>
+          </v-form>
+        </v-card>
+      </v-col>
+    </v-row>
+    <img class="image_class" src="@/assets/img.png" alt="">
+  </v-container>
 </template>
 
-
 <script>
+import {mask} from 'vue-the-mask'
+import { mainStore } from '@/store/mainActions.js'
+import { mapState, mapActions } from 'pinia'
+
 export default {
   name: 'MainPage',
-  data: () => ({
-    title: 'Регистрация',
-    name: null,
-    surname: null,
-    password: null,
-    email: null,
-    newsletter: false,
-    text: null,
-    date: null,
-    month: null,
-    year: null,
-  }),
+  directives: { mask },
+  data() {
+    return {
+      menu: false,
+      pickerDate: null,
+      dialog: false,
+    }
+  },
+  computed: {
+    ...mapState(mainStore, [
+      'title',
+      'name',
+      'surname',
+      'password',
+      'email',
+      'newsletter',
+      'specialOffers',
+      'text',
+      'address',
+      'date',
+      'month',
+      'year',
+      'errors',
+      'emailError',
+    ])
+  },
   methods: {
-    clickCheck() {
-      this.newsletter = true;
-      document.getElementById('newsletter').checked = this.newsletter;
+    ...mapActions(mainStore, [
+      'updateField',
+      'toggleNewsletter',
+      'toggleSpecialOffers',
+      'validate',
+      'save'
+    ]),
+    handleDatePicker(date) {
+      if (date) {
+        const d = new Date(date)
+        const pick = [
+          d.getDate().toString().padStart(2, '0'),
+          (d.getMonth() + 1).toString().padStart(2, '0'),
+          d.getFullYear()
+        ].join('.')
+        this.updateField('date', pick);
+        this.menu = false
+      }
     },
-    inputName(value) {
-      this.name = value;
+    clickSave() {
+      this.save();
+      if (this.text) {
+        this.dialog = true;
+      }
     },
-    inputValue(value) {
-      Object.keys(value).forEach((key) => {
-        this[key] = value[key]
-      })
-    },
-    blurName() {
-      this.name = null;
-    },
-    save() {
-      Object.keys(this.$data).forEach((key) => {
-        if (!this.$data[key]) {
-          document.getElementById(key)?.classList.add('error')
-        }
-        if (key === 'email') {
-          const isValidEmail = /^[^\s@]+@([^\s@]*)$/.test(this.$data[key]);
-          if (!isValidEmail) {
-            document.getElementById(key)?.classList.add('error')
-          } else if (document.getElementById(key)?.classList.contains('error')) {
-            document.getElementById(key)?.classList.remove('error')
-          }
-        } else if (!!this.$data[key] && document.getElementById(key)?.classList.contains('error')) {
-          document.getElementById(key)?.classList.remove('error')
-        }
-      })
-      this.text = 'Ваша учетная запсиь успешно создлана!'
+    close() {
+      this.dialog = false;
     }
   }
 }
 </script>
 
 <style scoped lang="sass">
-.input
-  padding-top: 14px
-  &_name
-    display: flex
-    gap: 13px
-  &_surname
-    display: flex
-    flex-direction: column
-  &_password
-    display: flex
-    flex-direction: column
-    width: 500px
-  &_button
-    width: 100%
-    display: flex
-    justify-content: end
-    align-items: end
-    margin-top: 15px
-    &_text
-      font-size: 18px
-  &_date
-    display: flex
-    flex-direction: row
-    &_item
-      display: flex
-      flex-direction: column
-      gap: 5px
-
 .required
   &::after
     content: "*"
@@ -159,24 +203,12 @@ export default {
     line-height: 0
     position: relative
     top: 0
-  &_surname::after
-    position: relative
-    top: -23px
-    content: "*"
-    color: red
-    font-size: 18px
-    line-height: 0
 
-.checkbox-group
-  position: absolute
-  bottom: 20px
 
 .image_class
-  position: absolute
-  height: 300px
+  position: fixed
+  height: 400px
   right: 0
   bottom: 0
 
-.error
-  border: 1px solid red
 </style>
