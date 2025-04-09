@@ -6,22 +6,27 @@
   <div>
     <div class="input input_name">
       <label for="name" class="required">Имя</label>
-      <input type="text" :value="name" @input="inputName($event)" @blur="blurName">
+      <input type="text" id="name" :value="name" @input="inputName($event)" @blur="blurName">
     </div>
 
     <div class="input input_surname">
       <label for="surname" class="required_surname">Фамилия</label>
-      <input type="text" :value="surname" @input="inputValue({surname: $event.target.value})">
+      <input type="text" id="surname" :value="surname" @input="inputValue({surname: $event.target.value})">
     </div>
 
     <div class="input input_password">
       <label for="password" class="required">Пароль</label>
-      <input type="text" :value="password" @input="inputValue({password: $event.target.value})">
+      <input type="text" id="password" :value="password" @input="inputValue({password: $event.target.value})">
     </div>
 
     <div class="input input_password">
       <label for="email" class="required">E-mail</label>
-      <input type="text" :value="email" @input="inputValue({email: $event.target.value})">
+      <input
+        type="text"
+        :value="email"
+        id="email"
+        @input="inputValue({email: $event.target.value})"
+      >
     </div>
 
     <div class="input input_password">
@@ -29,15 +34,15 @@
       <div class="input_date">
         <div class="input_date_item">
           День
-          <input type="number" :value="date" min="0" max="31" @input="inputValue({date: $event.target.value})">
+          <input type="number" id="date" :value="date" min="0" max="31" @input="inputValue({date: $event.target.value})">
         </div>
         <div class="input_date_item">
           Месяц
-          <input type="number" :value="month" min="0" max="12" @input="inputValue({month: $event.target.value})">
+          <input type="number" id="month" :value="month" min="0" max="12" @input="inputValue({month: $event.target.value})">
         </div>
         <div class="input_date_item">
           Год
-          <input type="number" :value="year" min="0" @input="inputValue({year: $event.target.value})">
+          <input type="number" id="year" :value="year" min="0" @input="inputValue({year: $event.target.value})">
         </div>
       </div>
     </div>
@@ -96,6 +101,21 @@ export default {
       this.name = null;
     },
     save() {
+      Object.keys(this.$data).forEach((key) => {
+        if (!this.$data[key]) {
+          document.getElementById(key)?.classList.add('error')
+        }
+        if (key === 'email') {
+          const isValidEmail = /^[^\s@]+@([^\s@]*)$/.test(this.$data[key]);
+          if (!isValidEmail) {
+            document.getElementById(key)?.classList.add('error')
+          } else if (document.getElementById(key)?.classList.contains('error')) {
+            document.getElementById(key)?.classList.remove('error')
+          }
+        } else if (!!this.$data[key] && document.getElementById(key)?.classList.contains('error')) {
+          document.getElementById(key)?.classList.remove('error')
+        }
+      })
       this.text = 'Ваша учетная запсиь успешно создлана!'
     }
   }
@@ -156,4 +176,7 @@ export default {
   height: 300px
   right: 0
   bottom: 0
+
+.error
+  border: 1px solid red
 </style>
