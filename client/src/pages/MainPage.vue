@@ -20,7 +20,7 @@
             <v-card-subtitle class="pl-0 required">Фамилия</v-card-subtitle>
             <v-text-field
               v-model="surname"
-              label="Фамилия"
+              label="Имя"
               required
               :error-messages="errors.surname"
               @input="updateField('surname', $event.target.value)"
